@@ -1,5 +1,4 @@
 use rust_im_server;
-use rocket::{self};
 
 #[rocket::main]
 async fn main() -> Result<(), rocket::Error> {

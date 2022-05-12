@@ -1,14 +1,15 @@
 table! {
-    users (user_id) {
-        user_id -> Uuid,
-        nick_name -> Text,
+    users (id) {
+        id -> Uuid,
+        user_id -> Text,
+        nickname -> Text,
         face_url -> Text,
         gender -> Int4,
-        phone_number -> Text,
+        phone_number -> Nullable<Text>,
         birth -> Int4,
-        email -> Text,
+        email -> Nullable<Text>,
         create_time -> Timestamptz,
-        app_manger_level -> Int4,
+        app_manager_level -> Nullable<Int4>,
         ex -> Text,
         attached_info -> Text,
         is_deleted -> Bool,
