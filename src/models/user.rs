@@ -3,8 +3,6 @@ use chrono::{Duration, Utc, DateTime};
 use serde::Serialize;
 use uuid::Uuid;
 
-type Url = String;
-
 #[derive(Queryable, Serialize)]
 pub struct User {
     pub id: Uuid,
@@ -33,6 +31,7 @@ pub struct User {
 pub struct UserAuth<'a> {
     user_id: &'a str,
     token: String,
+    exp: i64,
 }
 
 #[derive(Serialize)]
@@ -56,6 +55,7 @@ impl User {
         UserAuth {
             user_id: &self.user_id,
             token,
+            exp: exp.timestamp(),
         }
     }
 }
