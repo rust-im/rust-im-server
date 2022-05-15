@@ -6,7 +6,7 @@ use std::env;
 
 /// Debug only secret for JWT encoding & decoding.
 pub const APP_SECRET: &'static str = "8Xui8SN4mI+7egV/9dlfYYLGQJeEx4+DwmSQLwDVXJg=";
-pub const JWT_SECRET: &'static str = "rustim";
+pub const JWT_SECRET: &'static str = "cnVzdGlt"; // base64 rustim
 
 /// js toISOString() in test suit can't handle chrono's default precision
 pub const DATE_FORMAT: &'static str = "%Y-%m-%dT%H:%M:%S%.3fZ";
@@ -14,14 +14,15 @@ pub const DATE_FORMAT: &'static str = "%Y-%m-%dT%H:%M:%S%.3fZ";
 pub const TOKEN_PREFIX: &'static str = "Token ";
 
 pub struct AppState {
-    pub secret: Vec<u8>,
+    pub jwt_secret: Vec<u8>,
+    pub app_secret: Vec<u8>,
 }
 
 impl AppState {
     pub fn manage() -> AdHoc {
         AdHoc::on_ignite("Manage config", |rocket| async move {
             // Rocket doesn't expose it's own secret_key, so we use our own here.
-            let secret = env::var("APP_SECRET_KEY").unwrap_or_else(|err| {
+            let app_secret = env::var("APP_SECRET_KEY").unwrap_or_else(|err| {
                 if cfg!(debug_assertions) {
                     APP_SECRET.to_string()
                 } else {
@@ -29,8 +30,17 @@ impl AppState {
                 }
             });
 
+            let jwt_secret = env::var("JWT_SECRET_KEY").unwrap_or_else(|err| {
+                if cfg!(debug_assertions) {
+                    JWT_SECRET.to_string()
+                } else {
+                    panic!("No SECRET_KEY environment variable found: {:?}", err)
+                }
+            });
+
             rocket.manage(AppState {
-                secret: secret.into_bytes(),
+                jwt_secret: jwt_secret.into_bytes(),
+                app_secret: app_secret.into_bytes(),
             })
         })
     }

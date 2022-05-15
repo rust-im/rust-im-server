@@ -4,7 +4,7 @@ use rocket::Route;
 use serde::Deserialize;
 
 use crate::errors::{Errors, FieldValidator};
-use crate::services::users::NewUserDto;
+use crate::services::users::DtoNewUser;
 use crate::services::{self, Db};
 use crate::config::JWT_SECRET;
 
@@ -59,7 +59,7 @@ pub async fn register_user(
     extractor.check()?;
 
     db.run(move |conn| {
-        let register_user = NewUserDto {
+        let register_user = DtoNewUser {
             user_id: &user_id,
             nickname: &nickname,
             face_url: &face_url,

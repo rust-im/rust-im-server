@@ -4,7 +4,6 @@ use rocket::http::Status;
 use rocket::outcome::Outcome;
 use rocket::request::{self, FromRequest, Request};
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 
 use jsonwebtoken as jwt;
 
@@ -15,7 +14,6 @@ pub struct Auth {
     /// timestamp
     pub exp: i64,
     /// user id
-    pub id: Uuid,
     pub user_id: String,
 }
 
@@ -36,7 +34,7 @@ impl<'r> FromRequest<'r> for Auth {
     /// Handlers with Option<Auth> will be called with None.
     async fn from_request(req: &'r Request<'_>) -> request::Outcome<Auth, Self::Error> {
         let state = req.rocket().state::<AppState>().unwrap();
-        if let Some(auth) = extract_auth_from_request(req, &state.secret) {
+        if let Some(auth) = extract_auth_from_request(req, &state.jwt_secret) {
             Outcome::Success(auth)
         } else {
             Outcome::Failure((Status::Forbidden, ()))

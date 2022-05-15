@@ -1,20 +1,14 @@
+use diesel::pg::expression::dsl::any;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
-use diesel::query_dsl::methods::FindDsl;
-use diesel::result::{DatabaseErrorKind, Error};
-use scrypt::{
-    password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
-    Scrypt,
-};
-use serde::Deserialize;
-use uuid::Uuid;
+use diesel::result::Error;
 
-use crate::models::user::User;
+use crate::models::user::{User, PublicUser};
 use crate::schema::users;
 
 #[derive(Debug, Insertable)]
 #[table_name = "users"]
-pub struct NewUserDto<'a> {
+pub struct DtoNewUser<'a> {
     pub user_id: &'a str,
     pub nickname: &'a str,
     pub face_url: &'a str,
@@ -26,7 +20,7 @@ pub struct NewUserDto<'a> {
     pub attached_info: &'a str,
 }
 
-pub fn register_user(conn: &PgConnection, new_user: NewUserDto) -> Result<User, Error> {
+pub fn register_user(conn: &PgConnection, new_user: DtoNewUser) -> Result<User, Error> {
     diesel::insert_into(users::table)
         .values(new_user)
         .get_result::<User>(conn)
@@ -37,4 +31,14 @@ pub fn get_user_by_user_id(conn: &PgConnection, user_id: String) -> Result<User,
         .filter(users::is_deleted.eq(false))
         .filter(users::user_id.eq(user_id))
         .get_result(conn)
+}
+
+pub fn get_user_by_user_ids(conn: &PgConnection, user_ids: Vec<String>) -> Result<Vec<PublicUser>, Error> {
+    users::table
+        .filter(users::is_deleted.eq(false))
+        .filter(users::user_id.eq(any(user_ids)))
+        .get_results::<User>(conn)
+        .map(|res| {
+            res.into_iter().map(|u| u.to_public()).collect()
+        })
 }
