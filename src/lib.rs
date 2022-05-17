@@ -25,6 +25,7 @@ mod errors;
 mod models;
 mod controllers;
 mod schema;
+mod ws_server;
 
 #[catch(404)]
 fn not_found() -> Value {
@@ -43,6 +44,7 @@ fn cors_fairing() -> Cors {
 #[launch]
 pub fn rocket() -> _ {
     dotenv().ok();
+    ws_server::launch();
     rocket::custom(config::from_env())
         .mount("/api/v1", [controllers::users::routes(), controllers::auth::routes()].concat())
         .attach(services::Db::fairing())

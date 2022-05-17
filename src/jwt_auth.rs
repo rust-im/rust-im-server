@@ -60,7 +60,7 @@ fn extract_token_from_header(header: &str) -> Option<&str> {
 
 /// Decode token into `Auth` struct. If any error is encountered, log it
 /// an return None.
-fn decode_token(token: &str, secret: &[u8]) -> Option<Auth> {
+pub fn decode_token(token: &str, secret: &[u8]) -> Option<Auth> {
     use jwt::{Algorithm, Validation};
 
     let decoding_key = DecodingKey::from_base64_secret(std::str::from_utf8(secret).unwrap());

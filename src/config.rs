@@ -19,8 +19,7 @@ pub struct AppState {
 }
 
 impl AppState {
-    pub fn manage() -> AdHoc {
-        AdHoc::on_ignite("Manage config", |rocket| async move {
+    pub fn get_config() -> AppState {
             // Rocket doesn't expose it's own secret_key, so we use our own here.
             let app_secret = env::var("APP_SECRET_KEY").unwrap_or_else(|err| {
                 if cfg!(debug_assertions) {
@@ -38,10 +37,15 @@ impl AppState {
                 }
             });
 
-            rocket.manage(AppState {
+            AppState {
                 jwt_secret: jwt_secret.into_bytes(),
                 app_secret: app_secret.into_bytes(),
-            })
+            }
+    }
+
+    pub fn manage() -> AdHoc {
+        AdHoc::on_ignite("Manage config", |rocket| async move {
+            rocket.manage(AppState::get_config())
         })
     }
 }
