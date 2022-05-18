@@ -12,6 +12,9 @@ pub const JWT_SECRET: &'static str = "cnVzdGlt"; // base64 rustim
 pub const DATE_FORMAT: &'static str = "%Y-%m-%dT%H:%M:%S%.3fZ";
 
 pub const TOKEN_PREFIX: &'static str = "Token ";
+pub const REDIS_ADDRESS: &'static str = "redis://127.0.0.1:6379";
+pub const WS_ADDRESS: &'static str = "127.0.0.1:54321";
+
 
 pub struct AppState {
     pub jwt_secret: Vec<u8>,

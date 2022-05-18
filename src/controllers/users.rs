@@ -1,9 +1,11 @@
 use crate::errors::Errors;
 use crate::jwt_auth::Auth;
+use crate::redis_connections::RedisClient;
 use crate::services::{self, Db};
 
 use rocket::serde::json::{json, Json, Value};
 use rocket::Route;
+use rocket::State;
 use serde::Deserialize;
 
 pub fn routes() -> Vec<Route> {
@@ -48,10 +50,14 @@ pub struct ReqEmpty {
 pub async fn get_self_user_info(
     db: Db,
     auth: Auth,
-    get_self_info: Json<ReqEmpty>
+    get_self_info: Json<ReqEmpty>,
+    state: &State<RedisClient>,
 ) -> Result<Value, Errors> {
     let user_id = auth.user_id;
     let _empty = get_self_info.into_inner();
+    let mut _redis = state.get_connection();
+    let mut _redis = &mut _redis;
+
     db.run(move |conn| {
         services::users::get_user_by_user_id(conn, user_id)
             .map(|user| json!({ "data": user }))

@@ -26,6 +26,7 @@ mod models;
 mod controllers;
 mod schema;
 mod ws_server;
+mod redis_connections;
 
 #[catch(404)]
 fn not_found() -> Value {
@@ -50,5 +51,6 @@ pub fn rocket() -> _ {
         .attach(services::Db::fairing())
         .attach(cors_fairing())
         .attach(config::AppState::manage())
+        .attach(redis_connections::RedisClient::manage())
         .register("/", catchers![not_found])
 }

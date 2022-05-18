@@ -1,3 +1,7 @@
 # rust-im-server
 
 play with rocket.
+
+> test1 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTc3ODc2NDMsInVzZXJfaWQiOiJ0ZXN0MSJ9.hhKizCmojq832wCTVjoPW6usDlfZjs8cTaGTLR_JUNQ
+
+> test2 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTgwNDM0NjgsInVzZXJfaWQiOiJ0ZXN0MiJ9.u1mdrT1vzoFmvxUp-UglTu1CuCkNxNGlJG2dET3iSeM
