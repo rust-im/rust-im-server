@@ -3,7 +3,7 @@ use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use diesel::result::Error;
 
-use crate::models::user::{User, PublicUser};
+use crate::models::users::{User, PublicUser};
 use crate::schema::users;
 
 #[derive(Debug, Insertable)]

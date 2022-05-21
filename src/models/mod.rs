@@ -1,3 +1,2 @@
-pub mod user;
-
-
+pub mod users;
+pub mod friend_requests;

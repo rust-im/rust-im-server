@@ -2,7 +2,7 @@
 
 #[macro_use]
 extern crate rocket;
-use rocket::{serde::json::{json, Value}};
+use rocket::serde::json::{json, Value};
 
 #[macro_use]
 extern crate rocket_sync_db_pools;
@@ -18,15 +18,15 @@ extern crate validator_derive;
 
 use dotenv::dotenv;
 
-mod jwt_auth;
 mod config;
-mod services;
-mod errors;
-mod models;
 mod controllers;
-mod schema;
-mod ws_server;
+mod errors;
+mod jwt_auth;
+mod models;
 mod redis_connections;
+mod schema;
+mod services;
+mod ws_server;
 
 #[catch(404)]
 fn not_found() -> Value {
@@ -47,7 +47,15 @@ pub fn rocket() -> _ {
     dotenv().ok();
     ws_server::launch();
     rocket::custom(config::from_env())
-        .mount("/api/v1", [controllers::users::routes(), controllers::auth::routes()].concat())
+        .mount(
+            "/api/v1",
+            [
+                controllers::users::routes(),
+                controllers::auth::routes(),
+                controllers::friends::routes(),
+            ]
+            .concat(),
+        )
         .attach(services::Db::fairing())
         .attach(cors_fairing())
         .attach(config::AppState::manage())

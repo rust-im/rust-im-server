@@ -15,3 +15,18 @@ table! {
         is_deleted -> Bool,
     }
 }
+
+table! {
+    friend_requests (from_user_id, to_user_id) {
+        from_user_id -> Text,
+        to_user_id -> Text,
+        handle_result -> Int4,
+        req_msg -> Text,
+        create_time -> Timestamptz,
+        handler_user_id -> Text,
+        handle_msg -> Text,
+        handle_time -> Timestamptz,
+        ex -> Text,
+        is_deleted -> Bool,
+    }
+}
