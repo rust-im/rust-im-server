@@ -6,6 +6,7 @@ use serde::Deserialize;
 use crate::errors::Errors;
 use crate::services::friend_requests::DtoNewFriendRequest;
 use crate::services::{self, Db};
+use crate::messages::friend_notification;
 
 pub fn routes() -> Vec<Route> {
     routes![add_friend]
@@ -24,7 +25,7 @@ pub struct ReqCommID {
     #[serde(rename = "opUserID")]
     _op_user_id: String,
     #[serde(rename = "operationID")]
-    _operation_id: Option<String>,
+    operation_id: String,
     #[serde(rename = "toUserID")]
     to_user_id: String,
     #[serde(rename = "fromUserID")]
@@ -60,6 +61,12 @@ pub async fn add_friend(db: Db, add_friend_info: Json<ReqAddFriendInfo>) -> Resu
             );
             return Err(Errors::new(&[("db_err", "insert error")]));
         }
+
+        friend_notification::friend_apply_notification(
+            add_friend_info.comm_id.from_user_id.clone(),
+            add_friend_info.comm_id.to_user_id.clone(),
+            add_friend_info.comm_id.operation_id.clone(),
+        );
 
         Ok(json!({ "data": new_friend_request_result.unwrap() }))
     })

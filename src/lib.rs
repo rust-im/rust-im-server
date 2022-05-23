@@ -19,9 +19,11 @@ extern crate validator_derive;
 use dotenv::dotenv;
 
 mod config;
+mod constants;
 mod controllers;
 mod errors;
 mod jwt_auth;
+mod messages;
 mod models;
 mod redis_connections;
 mod schema;
